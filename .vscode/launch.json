@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug sponge",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/tests/${fileBasenameNoExtension}",
+            "args": [],
+            "stopOnEntry": false,
+            "cwd": "${workspaceFolder}",
+            "internalConsoleOptions": "neverOpen",
+            "console": "integratedTerminal",
+        }
+    ]
+}
