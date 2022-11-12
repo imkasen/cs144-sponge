@@ -5,18 +5,12 @@
 // For Lab 2, please replace with a real implementation that passes the
 // automated checks run by `make check_lab2`.
 
-template <typename... Targs>
-void DUMMY_CODE(Targs &&... /* unused */) {}
-
 using namespace std;
 
 //! Transform an "absolute" 64-bit sequence number (zero-indexed) into a WrappingInt32
 //! \param n The input absolute 64-bit sequence number
 //! \param isn The initial sequence number
-WrappingInt32 wrap(uint64_t n, WrappingInt32 isn) {
-    DUMMY_CODE(n, isn);
-    return WrappingInt32{0};
-}
+WrappingInt32 wrap(uint64_t n, WrappingInt32 isn) { return isn + static_cast<uint32_t>(n); }
 
 //! Transform a WrappingInt32 into an "absolute" 64-bit sequence number (zero-indexed)
 //! \param n The relative sequence number
@@ -29,6 +23,16 @@ WrappingInt32 wrap(uint64_t n, WrappingInt32 isn) {
 //! and the other stream runs from the remote TCPSender to the local TCPReceiver and
 //! has a different ISN.
 uint64_t unwrap(WrappingInt32 n, WrappingInt32 isn, uint64_t checkpoint) {
-    DUMMY_CODE(n, isn, checkpoint);
-    return {};
+    // n 可以在 checkpoint 的左边，也可以在 checkpoint 的右边，
+    // 留意无符号数相减求偏移量，例如：
+    // n 为 1，checkpoint 为 7，1 - 7 等于 1<<32 + 1 - 7
+    // 所以如果新位置距离 checkpoint 的偏移量大于 1<<32 的一半，即 1<<31
+    // 那么离 checkpoint 最近的位置实际上是在 checkpoint 的左侧
+
+    uint32_t offset = n - wrap(checkpoint, isn);
+    uint64_t pos = checkpoint + offset;
+    if (offset > (1u << 31) && pos >= (1ul << 32)) {
+        pos -= (1ul << 32);
+    }
+    return pos;
 }
