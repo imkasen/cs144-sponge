@@ -1,6 +1,8 @@
 #ifndef SPONGE_LIBSPONGE_BYTE_STREAM_HH
 #define SPONGE_LIBSPONGE_BYTE_STREAM_HH
 
+#include "buffer.hh"
+
 #include <cstddef>
 #include <deque>
 #include <string>
@@ -19,7 +21,8 @@ class ByteStream {
     // that's a sign that you probably want to keep exploring
     // different approaches.
 
-    std::deque<char> _buffer;
+    // std::deque<char> _buffer; // lab0
+    BufferList _buffer;  // optimization in lab4
     size_t _capacity;
     size_t _written_size;
     size_t _read_size;
